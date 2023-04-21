@@ -1,4 +1,4 @@
-
+use actix_web::{HttpRequest, HttpResponse, Responder};
 use sqlx::{Error, Pool, Postgres, Row};
 use sqlx::postgres::{PgPoolOptions, PgRow};
 //
@@ -49,7 +49,7 @@ pub(crate) async fn selecting() -> Result<(),Error>{
 }
 
 
-async fn select_all_from_table() -> Result<(),Error> {
+pub async fn select_all_from_table() -> Result<(),Error> {
 
 
     dotenv::dotenv().expect("Unable to load environment variables from .env file");
@@ -71,7 +71,18 @@ async fn select_all_from_table() -> Result<(),Error> {
         println!("{}", title);
         println!("{}", description);
         println!("{}", name);
+        get_data(title, description, name).await;
+
     }
 
     Ok(())
+}
+
+pub async fn get_data(title:String,description:String,name:String)-> impl Responder{
+let x=description;
+    let y=name;
+    let data= title+ &*x + &*y;
+    println!("⭐⭐⭐⭐⭐{}",data);
+
+    HttpResponse::Ok().json(data)
 }

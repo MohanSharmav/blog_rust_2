@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>My App</title>
+</head>
+<body>
+<div id="data">come on</div>
+<script>
+      fetch('/data')
+        .then(response => response.json())
+        .then(data => {
+          const div = document.getElementById('data');
+          div.innerHTML = `
+            <p>Name: ${data.name}</p>
+            <p>Age: ${data.title}</p>
+            <p>Description: ${data.description}</p>
+          `;
+        })
+        .catch(error => console.error(error));
+    </script>
+</body>
+</html>
