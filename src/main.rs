@@ -12,7 +12,6 @@ use database::selecting;
 
 use warp::{Rejection, Reply};
 
-
 async fn index(req: HttpRequest)-> Result<NamedFile>{
      let path= Path::new("src/one.html");
      Ok(NamedFile::open(path)?)
