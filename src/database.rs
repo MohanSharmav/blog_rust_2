@@ -1,9 +1,11 @@
+use std::collections::BTreeMap;
+use std::fs;
 use actix_web::{HttpRequest, HttpResponse, Responder, web};
 use sqlx::{Error, Pool, Postgres, Row};
 use sqlx::postgres::{PgPoolOptions, PgRow};
 use warp::http::Response;
 use handlebars::Handlebars;
-
+use std::string::String;
 //
 // pub  async fn connect_database(){
 //
@@ -71,24 +73,58 @@ pub async fn select_all_from_table() -> Result<(),Error> {
         let title:String=row.get("title");
        let description: String = row.get("description");
         let name:String= row.get("name");
+      //  let x:String=title+ &*description + &*name;
         println!("{}", title);
         println!("{}", description);
         println!("{}", name);
-        get_data(title, description, name).await;
-
+     //   get_data(title, description, name).await;
+        let x: String = title.to_owned() + &*description + &*name;
+        will_win(x.clone()).await;
+        println!("boissojsdsodojsdo{}",x);
     }
+
 
     Ok(())
 }
 
-pub async fn get_data(title:String,description:String,name:String)-> impl Responder{
+pub async fn get_data(title:String,description:String,name:String){
 let x=description;
     let y=name;
-    let data= title+ &*x + &*y;
-    println!("⭐⭐⭐⭐⭐{}",data);
+    let benny= title+ &*x + &*y;
+    // println!("⭐⭐⭐⭐⭐{}",data);
 
+    will_win(benny);
 
    // let mut res=Response::new(data);
-    HttpResponse::Ok().json(data)
+   //  HttpResponse::Ok().json(data)
 }
 
+
+pub async fn will_win(x:String)->HttpResponse{
+    let mut handlebars = Handlebars::new();
+
+
+    // Register the "index" template from a file
+    let index_template = fs::read_to_string("templates/index.hbs").unwrap();
+    handlebars
+        .register_template_string("index", &index_template)
+        .unwrap();
+
+//let xy=String::from(benny);
+
+    let benny_string= x.to_string();
+    println!("⭐⭐⭐⭐⭐⭐ real star{}", benny_string);
+    // Create a context with data
+    let mut data = BTreeMap::new();
+  //  data.insert("title", benny);
+    data.insert("header", benny_string);
+    data.insert("ji", "Jos buttler".parse().unwrap());
+// data.insert("ok","England will win");
+    // Render the template with the context
+    let html = handlebars.render("index", &data).unwrap();
+
+    // Return the HTML page as a response
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(html)
+}

@@ -14,35 +14,13 @@ use database::selecting;
 
 
 use warp::{Rejection, Reply};
-use crate::database::get_data;
+use crate::database::{get_data, will_win};
 
 async fn index(req: HttpRequest)-> Result<NamedFile>{
      let path= Path::new("src/one.html");
      Ok(NamedFile::open(path)?)
 }
 
-async fn will_win()->HttpResponse{
-     let mut handlebars = Handlebars::new();
-
-     // Register the "index" template from a file
-     let index_template = fs::read_to_string("templates/index.hbs").unwrap();
-     handlebars
-         .register_template_string("index", &index_template)
-         .unwrap();
-
-     // Create a context with data
-     let mut data = BTreeMap::new();
-     data.insert("title", "My Page Title BEN STOKES");
-     data.insert("header", "Welcome to my page");
-
-     // Render the template with the context
-     let html = handlebars.render("index", &data).unwrap();
-
-     // Return the HTML page as a response
-     HttpResponse::Ok()
-         .content_type("text/html; charset=utf-8")
-         .body(html)
-}
 
 #[tokio::main]
 async fn main() -> Result<()>{
@@ -58,7 +36,7 @@ selecting().await.expect("TODO: panic message");
           App::new()
               .service(web::resource("/").to(index))
               .service(web::resource("/hi").to(index))
-              .service(web::resource("/data").to(get_data))
+            //  .service(web::resource("/data").to(get_data))
               .service(web::resource("/benstokes").to(will_win))
 
      })
