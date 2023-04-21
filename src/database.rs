@@ -6,6 +6,7 @@ use sqlx::postgres::{PgPoolOptions, PgRow};
 use warp::http::Response;
 use handlebars::Handlebars;
 use std::string::String;
+use warp::reply::html;
 //
 // pub  async fn connect_database(){
 //
@@ -56,6 +57,17 @@ pub(crate) async fn selecting() -> Result<(),Error>{
 
 pub async fn select_all_from_table() -> Result<(),Error> {
 
+    let mut handlebars = Handlebars::new();
+
+    let index_template = fs::read_to_string("templates/index.hbs").unwrap();
+    handlebars
+        .register_template_string("index", &index_template)
+        .unwrap();
+
+    let mut data = BTreeMap::new();
+    //  data.insert("title", benny);
+    data.insert("ji", "Jos buttler".parse().unwrap());
+
 
     dotenv::dotenv().expect("Unable to load environment variables from .env file");
 
@@ -73,17 +85,23 @@ pub async fn select_all_from_table() -> Result<(),Error> {
         let title:String=row.get("title");
        let description: String = row.get("description");
         let name:String= row.get("name");
+        data.insert("one", title.clone());
+        data.insert("two", description.clone());
+        data.insert("three", name.clone());
       //  let x:String=title+ &*description + &*name;
-        println!("{}", title);
-        println!("{}", description);
-        println!("{}", name);
+        println!("⭐⭐⭐⭐⭐⭐wiejwidni{}", title.clone());
+        println!("{}", description.clone());
+        println!("{}", name.clone());
      //   get_data(title, description, name).await;
         let x: String = title.to_owned() + &*description + &*name;
         will_win(x.clone()).await;
         println!("boissojsdsodojsdo{}",x);
     }
+    let html = handlebars.render("index", &data).unwrap();
 
-
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(html);
     Ok(())
 }
 
@@ -128,3 +146,4 @@ pub async fn will_win(x:String)->HttpResponse{
         .content_type("text/html; charset=utf-8")
         .body(html)
 }
+

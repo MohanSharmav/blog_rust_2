@@ -1,4 +1,5 @@
 mod database;
+mod database2;
 
 use std::collections::BTreeMap;
 use std::fs;
@@ -15,6 +16,7 @@ use database::selecting;
 
 use warp::{Rejection, Reply};
 use crate::database::{get_data, will_win};
+use crate::database2::finally;
 
 async fn index(req: HttpRequest)-> Result<NamedFile>{
      let path= Path::new("src/one.html");
@@ -24,6 +26,11 @@ async fn index(req: HttpRequest)-> Result<NamedFile>{
 
 #[tokio::main]
 async fn main() -> Result<()>{
+
+     finally().await.expect("finally not working");
+
+
+
      let mut handlebars = Handlebars::new();
      handlebars.register_template_file("index", "./templates/index.hbs")
          .unwrap();
