@@ -134,6 +134,7 @@ pub async fn will_win(x:String)->HttpResponse{
     println!("⭐⭐⭐⭐⭐⭐ real star{}", benny_string);
     // Create a context with data
     let mut data = BTreeMap::new();
+
   //  data.insert("title", benny);
     data.insert("header", benny_string);
     data.insert("ji", "Jos buttler".parse().unwrap());
