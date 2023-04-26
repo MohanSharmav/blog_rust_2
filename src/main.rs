@@ -15,7 +15,7 @@ use tokio::select;
 use warp::reply::{html, with_status};
 //use crate::controller::home_page::default_page;
 use warp::{Rejection, Reply};
-use crate::controller::home_page::default_page;
+use crate::controller::home_page::{default_page, get_all_posts_in_home_page};
 use crate::model::Homepage_query::get_all_posts;
 
 //use crate::model::Homepage_query::get_all_posts;
@@ -32,7 +32,8 @@ async fn main() -> Result<(),Box<dyn Error>>{
      HttpServer::new(|| {
           App::new()
              .service(web::resource("/").route(web::get().to(default_page)))
-              // .service(web::resource("/").route(web::get().to(get_all_posts)))
+              .service(web::resource("/home").route(web::get().to(get_all_posts_in_home_page)))
+
      })
          .bind("127.0.0.1:8080")?
          .run().await.expect("TODO: panic message");

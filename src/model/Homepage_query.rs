@@ -12,8 +12,9 @@ use sqlx::postgres::PgRow;
 use serde::{Serialize, Deserialize};
 use std::error::Error;
 use std::fmt::Formatter;
+use crate::controller::home_page::get_all_posts_in_home_page;
 
-#[derive(Deserialize, FromRow)]
+#[derive(Deserialize, FromRow,Clone)]
 pub struct posts{
 pub title: String,
     pub description: String,
@@ -53,8 +54,10 @@ pub async fn get_all_posts()->Result<Vec<posts>,Box<dyn Error>>
     //         name: row.get("name"),
     //     }
     // } ).collect();
+
+    get_all_posts_in_home_page(rows.clone());
    println!("ASD");
-    Ok(rows)
+    Ok(rows.clone())
 }
 
 
